@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swapnopuri Park Guide</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gradient-to-br from-green-100 to-blue-100 min-h-screen p-4">
+  <h1 class="text-3xl font-bold text-center mb-4">Swapnopuri Park Guide</h1>
+  <div class="flex justify-center mb-4">
+    <button onclick="toggleLanguage()" class="px-4 py-2 bg-yellow-300 rounded-xl shadow">Switch Language</button>
+  </div>
+  <div class="flex gap-2 items-center max-w-xl mx-auto mb-6">
+    <input id="searchInput" type="text" placeholder="Search location or ride..." class="flex-1 p-2 rounded-xl border border-gray-300 shadow" />
+    <button class="p-2 bg-white rounded-xl shadow"><i data-lucide="search"></i></button>
+  </div>
+  <div class="max-w-4xl mx-auto shadow-xl mb-6 bg-white rounded-xl">
+    <div class="p-4 flex flex-col lg:flex-row items-center justify-between">
+      <div class="mb-4 lg:mb-0">
+        <h2 class="text-xl font-semibold mb-2">3D Map Preview</h2>
+        <p class="text-sm text-gray-600">Explore the park in 3D. Tap to start walking around virtually.</p>
+        <button onclick="alert('Launching 3D view... (demo)')" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-xl">View 3D Map</button>
+      </div>
+      <img src="https://i.imgur.com/YJrU3FJ.png" alt="3D Map Preview" class="w-full max-w-sm rounded-xl shadow" />
+    </div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+    <button onclick="getMyLocation()" class="flex flex-col items-center p-4 bg-white rounded-xl shadow">
+      <i data-lucide="locate-fixed" class="mb-1"></i>My Location
+    </button>
+    <button onclick="alert('Showing park points...')" class="flex flex-col items-center p-4 bg-white rounded-xl shadow">
+      <i data-lucide="map-pin" class="mb-1"></i>Park Points
+    </button>
+    <button onclick="showRidePrices()" class="flex flex-col items-center p-4 bg-white rounded-xl shadow">
+      <i data-lucide="ticket" class="mb-1"></i>Ride Prices
+    </button>
+    <button onclick="playAudioGuide()" class="flex flex-col items-center p-4 bg-white rounded-xl shadow">
+      🎧 Audio Guide
+    </button>
+  </div>
+  <div id="rideModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full">
+      <h2 class="text-lg font-bold mb-2">🎡 Ride Prices</h2>
+      <ul id="rideList" class="mb-4 text-sm text-gray-700"></ul>
+      <button onclick="closeModal()" class="px-4 py-2 bg-red-500 text-white rounded">Close</button>
+    </div>
+  </div>
+  <script>
+    lucide.createIcons();
+    const rides = [
+      { name: "Water World", price: "৳150" },
+      { name: "Mini Train", price: "৳50" },
+      { name: "Ferris Wheel", price: "৳100" },
+      { name: "Magic Castle", price: "৳120" },
+    ];
+    function showRidePrices() {
+      const list = document.getElementById("rideList");
+      list.innerHTML = "";
+      rides.forEach(ride => {
+        const item = document.createElement("li");
+        item.textContent = `${ride.name} - ${ride.price}`;
+        list.appendChild(item);
+      });
+      document.getElementById("rideModal").classList.remove("hidden");
+    }
+    function closeModal() {
+      document.getElementById("rideModal").classList.add("hidden");
+    }
+    function getMyLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          alert(`You are here: Latitude ${pos.coords.latitude}, Longitude ${pos.coords.longitude}`);
+        }, () => {
+          alert("Location access denied.");
+        });
+      } else {
+        alert("Geolocation not supported.");
+      }
+    }
+    function playAudioGuide() {
+      const msg = new SpeechSynthesisUtterance("আপনি এখন Swapnopuri পার্কের প্রধান ফটকে আছেন। ডানে আছে রেল স্টেশন, সামনে ওয়াটার ওয়ার্ল্ড।");
+      msg.lang = "bn-BD";
+      speechSynthesis.speak(msg);
+    }
+    let isEnglish = true;
+    function toggleLanguage() {
+      const h1 = document.querySelector("h1");
+      const input = document.getElementById("searchInput");
+      if (isEnglish) {
+        h1.textContent = "স্বরূপনগরী পার্ক গাইড";
+        input.placeholder = "লোকেশন বা রাইড খুঁজুন...";
+      } else {
+        h1.textContent = "Swapnopuri Park Guide";
+        input.placeholder = "Search location or ride...";
+      }
+      isEnglish = !isEnglish;
+    }
+  </script>
+</body>
+</html>
